@@ -1,0 +1,29 @@
+
+server:
+  port: 4000
+
+
+auth:
+  service:
+    url: http://localhost:4001/auth
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service-route
+          uri: http://localhost:4001
+          predicates:
+            - Path=/auth/**
+
+        - id: event-service-route
+          uri: http://localhost:4002
+          predicates:
+            - Path=/event/**
+          filters:
+            - JwtValidation
+
+
