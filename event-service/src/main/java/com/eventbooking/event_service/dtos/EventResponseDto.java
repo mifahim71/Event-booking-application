@@ -23,7 +23,7 @@ public class EventResponseDto {
 
     private Double price;
 
-    private int totalSeats;
+    private int availableSeats;
 
     private String status;
 

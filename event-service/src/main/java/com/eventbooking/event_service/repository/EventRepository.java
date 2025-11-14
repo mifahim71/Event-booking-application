@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -24,4 +25,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("city") String city,
             @Param("date") LocalDate date,
             Pageable pageable);
+    
 }

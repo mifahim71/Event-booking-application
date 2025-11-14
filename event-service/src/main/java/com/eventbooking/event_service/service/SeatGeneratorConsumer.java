@@ -2,6 +2,8 @@ package com.eventbooking.event_service.service;
 
 import com.eventbooking.event_service.dtos.CreateSeatEvent;
 import com.eventbooking.event_service.entities.Event;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,11 +19,18 @@ import java.util.List;
 public class SeatGeneratorConsumer {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "create-seat-topic", groupId = "seat-generator-group")
-    public void handleEventCreated(CreateSeatEvent event){
-        log.info("Created seat for eventId: {}", event.getEventId());
-        generateSeat(event);
+    public void handleEventCreated(String eventJson) {
+
+        try{
+            CreateSeatEvent event = objectMapper.readValue(eventJson, CreateSeatEvent.class);
+            log.info("Created seat for eventId: {}", event.getEventId());
+            generateSeat(event);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     private void generateSeat(CreateSeatEvent event) {

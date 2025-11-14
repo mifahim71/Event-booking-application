@@ -1,10 +1,13 @@
 package com.eventbooking.event_service.controller;
 
+
 import com.eventbooking.event_service.dtos.EventCreateRequestDto;
 import com.eventbooking.event_service.dtos.EventCreateResponseDto;
 import com.eventbooking.event_service.dtos.EventResponseDto;
 import com.eventbooking.event_service.entities.Event;
+import com.eventbooking.event_service.entities.Seats;
 import com.eventbooking.event_service.exception.InvalidAccessForUserException;
+import com.eventbooking.event_service.repository.SeatRepository;
 import com.eventbooking.event_service.service.EventService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/event")
@@ -83,4 +85,7 @@ public class EventController {
 
         return ResponseEntity.ok().body(events);
     }
+
+
+
 }

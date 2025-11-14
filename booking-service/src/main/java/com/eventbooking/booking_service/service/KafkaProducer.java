@@ -1,6 +1,6 @@
-package com.eventbooking.event_service.service;
+package com.eventbooking.booking_service.service;
 
-import com.eventbooking.event_service.dtos.CreateSeatEvent;
+import com.eventbooking.booking_service.dtos.BookingEventDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -13,20 +13,15 @@ public class KafkaProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
-    private static final String TOPIC = "create-seat-topic";
+    private static final String TOPIC = "booking-create-event";
 
+    public void produceEvent(BookingEventDto eventDto){
 
-    public void produceEvent(CreateSeatEvent createSeatEvent){
-
-
-        try{
-
-            String createSeatEventJson = objectMapper.writeValueAsString(createSeatEvent);
-            kafkaTemplate.send(TOPIC, createSeatEventJson);
-
+        try {
+            String eventJson = objectMapper.writeValueAsString(eventDto);
+            kafkaTemplate.send(TOPIC, eventJson);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
-
     }
 }

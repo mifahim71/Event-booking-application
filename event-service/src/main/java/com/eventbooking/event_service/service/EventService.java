@@ -1,14 +1,12 @@
 package com.eventbooking.event_service.service;
 
-import com.eventbooking.event_service.dtos.CreateSeatEvent;
-import com.eventbooking.event_service.dtos.EventCreateRequestDto;
-import com.eventbooking.event_service.dtos.EventCreateResponseDto;
-import com.eventbooking.event_service.dtos.EventResponseDto;
+import com.eventbooking.event_service.dtos.*;
 import com.eventbooking.event_service.entities.Event;
 import com.eventbooking.event_service.enums.Status;
 import com.eventbooking.event_service.exception.EventNotFoundException;
 import com.eventbooking.event_service.mapper.EventMapper;
 import com.eventbooking.event_service.repository.EventRepository;
+import com.eventbooking.event_service.repository.SeatRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +24,8 @@ public class EventService {
     private final KafkaProducer kafkaProducer;
 
     private final EventMapper eventMapper;
+
+    private final SeatRepository seatRepository;
 
     //create a new event
     public EventCreateResponseDto createEvent(@Valid EventCreateRequestDto requestDto, String organizerId) {
@@ -53,16 +53,19 @@ public class EventService {
 
         Event event = findEventById(eventId);
 
-        return eventMapper.eventResponseDto(event);
+        EventResponseDto responseDto = eventMapper.eventResponseDto(event);
+        responseDto.setAvailableSeats(seatRepository.countByEventIdAndIsBooked(eventId, false));
+        return responseDto;
     }
 
+    //find event by city and date
+    public Page<Event> getEvents(String city, LocalDate date, Pageable pageable) {
+
+        return eventRepository.findByCityAndDate(city, date, pageable);
+    }
 
     private Event findEventById(Long eventId){
         return eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException("Event not found"));
     }
 
-    public Page<Event> getEvents(String city, LocalDate date, Pageable pageable) {
-
-        return eventRepository.findByCityAndDate(city, date, pageable);
-    }
 }

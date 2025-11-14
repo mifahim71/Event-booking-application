@@ -3,6 +3,7 @@ package com.eventbooking.event_service.mapper;
 import com.eventbooking.event_service.dtos.EventCreateResponseDto;
 import com.eventbooking.event_service.dtos.EventResponseDto;
 import com.eventbooking.event_service.entities.Event;
+import com.eventbooking.event_service.repository.SeatRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,6 @@ public class EventMapper {
 
         EventResponseDto responseDto = new EventResponseDto();
         responseDto.setName(event.getName());
-        responseDto.setTotalSeats(event.getTotalSeats());
         responseDto.setLocation(event.getLocation());
         responseDto.setStartTime(event.getStartTime());
         responseDto.setEndTime(event.getEndTime());
