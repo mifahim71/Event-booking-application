@@ -14,4 +14,5 @@ public class BookingResponseDto {
     private Long bookingId;
     private String status;
     private String message;
+    private double totalPrice;
 }

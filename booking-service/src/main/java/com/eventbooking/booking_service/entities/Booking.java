@@ -35,6 +35,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @NotNull(message = "total price not found")
+    private double totalPrice;
+
     @NotNull(message = "bookedAt not found")
     private LocalDateTime bookedAt;
 }

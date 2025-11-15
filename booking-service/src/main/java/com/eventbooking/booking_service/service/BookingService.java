@@ -43,7 +43,7 @@ public class BookingService {
         for(String seat: requestDto.getSeats()){
             String redisKey = redisPrefix+seat;
             if(Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))){
-                return new BookingResponseDto(null, Status.FAILED.toString(), "Booking failed some seat is already Locked");
+                return new BookingResponseDto(null, Status.FAILED.toString(), "Booking failed some seat is already Locked", 0L);
             }
         }
 
@@ -56,26 +56,32 @@ public class BookingService {
         log.info("total seats from seat service: {}", availableSeats.size());
         if(availableSeats.size() != requestDto.getSeats().size()){
             unlockSeats(redisPrefix, requestDto.getSeats());
-            return new BookingResponseDto(null, Status.FAILED.toString(), "Booking failed some seat is already booked");
+            return new BookingResponseDto(null, Status.FAILED.toString(), "Booking failed some seat is already booked", 0L);
         }
 
 
 
+        //That's just simple delay to test, if our lock is working, since we have not used any payment gateway in here
         Thread.sleep(10000);
+
+
         Booking booking = new Booking();
         booking.setBookedAt(LocalDateTime.now());
         booking.setStatus(Status.CONFIRMED);
         booking.setEventId(requestDto.getEventId());
         booking.setUserId(userId);
+        booking.setTotalPrice(availableSeats.get(0).getPrice() * availableSeats.size());
         booking.setSeatNumbers(String.join(" , ", requestDto.getSeats()));
 
         Booking savedBooking = bookingRepository.save(booking);
 
+        //send kafka producer to set booked to true in database
         kafkaProducer.produceEvent(new BookingEventDto(requestDto.getSeats(), requestDto.getEventId()));
 
 
+        //unlock seats
         unlockSeats(redisPrefix, requestDto.getSeats());
-        return bookingMapper.bookingResponseDto(savedBooking, "Booking successful of event with seats " + String.join(" , ", requestDto.getSeats()));
+        return bookingMapper.bookingResponseDto(savedBooking, "Booking successful of event with seats " + String.join(" , ", requestDto.getSeats()), savedBooking.getTotalPrice());
     }
 
     private void unlockSeats(String redisPrefix, List<String> seats){

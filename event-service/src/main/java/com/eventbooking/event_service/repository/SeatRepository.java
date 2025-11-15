@@ -14,7 +14,7 @@ public interface SeatRepository extends JpaRepository<Seats, Long> {
 
     int countByEventIdAndIsBooked(Long eventId, Boolean isBooked);
 
-    @Query("SELECT s FROM Seats s WHERE s.event.id = :eventId AND s.seatNumber IN :seatNames AND isBooked = false")
+    @Query("SELECT s FROM Seats s WHERE s.event.id = :eventId AND s.seatNumber IN :seatNames AND isBooked = false AND s.event.status = 'UPCOMING' ")
     List<Seats> findSeats(@Param("eventId") Long eventId, @Param("seatNames") List<String> seatNames);
 
 
