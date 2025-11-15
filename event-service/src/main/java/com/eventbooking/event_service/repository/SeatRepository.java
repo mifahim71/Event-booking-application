@@ -21,4 +21,7 @@ public interface SeatRepository extends JpaRepository<Seats, Long> {
     @Modifying
     @Query("UPDATE Seats s SET s.isBooked = true WHERE s.event.id = :eventId AND s.seatNumber IN :seats AND s.isBooked = false")
     int markSeatsAsBooked(@Param("eventId") Long eventId, @Param("seats") List<String> seats);
+
+
+    List<Seats> findByEventId(Long eventId);
 }

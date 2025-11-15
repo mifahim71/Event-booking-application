@@ -1,6 +1,7 @@
 package com.eventbooking.event_service.controller;
 
 import com.eventbooking.event_service.dtos.CheckSeatAvailable;
+import com.eventbooking.event_service.dtos.SeatAvailableResponseDto;
 import com.eventbooking.event_service.dtos.SeatResponseDto;
 import com.eventbooking.event_service.entities.Seats;
 import com.eventbooking.event_service.mapper.SeatMapper;
@@ -27,5 +28,14 @@ public class SeatController {
         List<SeatResponseDto> seatResponseDtos = seatService.findSeats(checkSeatAvailable);
 
         return ResponseEntity.ok().body(seatResponseDtos);
+    }
+
+    @GetMapping("/{eventId}/available-seats")
+    public ResponseEntity<List<SeatAvailableResponseDto>> findAvailableSeats(
+            @PathVariable Long eventId
+    ){
+
+        List<SeatAvailableResponseDto> seatMap = seatService.findSeatMap(eventId);
+        return ResponseEntity.ok().body(seatMap);
     }
 }

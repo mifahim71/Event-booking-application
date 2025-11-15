@@ -15,7 +15,4 @@ public interface SeatsClient {
 
     @PostMapping("/available-seats")
     List<SeatResponseDto> getAvailableSeats(@RequestBody CheckSeatAvailable request);
-
-    @PutMapping("/bookSeats")
-    void bookSeats(@RequestBody BookSeatDto bookSeatDto);
 }

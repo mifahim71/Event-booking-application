@@ -26,6 +26,13 @@ spring:
           filters:
             - JwtValidation
 
+        - id: seat-service-route
+          uri: http://localhost:4002
+          predicates:
+            - Path=/seat/**
+          filters:
+            - JwtValidation
+
         - id: booking-service-route
           uri: http://localhost:4003
           predicates:
